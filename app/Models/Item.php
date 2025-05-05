@@ -16,9 +16,22 @@ use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
 use ApiPlatform\Metadata\QueryParameter;
 
 #[ApiResource(
-    paginationItemsPerPage: 2
+    paginationItemsPerPage: 2,
+    paginationMaximumItemsPerPage: 10,
+    paginationClientItemsPerPage: true
 )]
-#[GetCollection()]
+#[GetCollection(
+    parameters: [
+        'name' => new QueryParameter(
+            filter: PartialSearchFilter::class,
+            description: 'Search by name'
+        ),
+        'description' => new QueryParameter(
+            filter: PartialSearchFilter::class,
+            description: 'Search by description'
+        )
+    ]
+)]
 #[Get()]
 #[Patch()]
 #[Delete()]
@@ -36,8 +49,6 @@ use ApiPlatform\Metadata\QueryParameter;
         )
     )
 )]
-#[QueryParameter(key: 'name', filter: PartialSearchFilter::class)]
-#[QueryParameter(key: 'description', filter: PartialSearchFilter::class)]
 class Item extends Model
 {
     /** @use HasFactory<\Database\Factories\ItemFactory> */
