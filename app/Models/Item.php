@@ -15,24 +15,8 @@ use ApiPlatform\OpenApi\Model\RequestBody;
 use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
 use ApiPlatform\Metadata\QueryParameter;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use ApiPlatform\Metadata\Link;
 
-#[ApiResource(
-    paginationItemsPerPage: 2,
-    paginationMaximumItemsPerPage: 10,
-    paginationClientItemsPerPage: true
-)]
-#[GetCollection(
-    parameters: [
-        'name' => new QueryParameter(
-            filter: PartialSearchFilter::class,
-            description: 'Search by name'
-        ),
-        'description' => new QueryParameter(
-            filter: PartialSearchFilter::class,
-            description: 'Search by description'
-        )
-    ]
-)]
 #[Get()]
 #[Patch()]
 #[Delete()]
@@ -43,12 +27,39 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
                 'application/ld+json' => [
                     'example' => [
                         'name' => 'Item 1',
-                        'description' => 'Description 1'
+                        'description' => 'Description 1',
+                        'inventory' => 'api/inventories/1'
                     ]
                 ]
             ])
         )
     )
+)]
+// using api resource attribute to group the two get collection operations
+// this way we can use the same parameters for both operations
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new GetCollection(
+            uriTemplate: '/inventories/{id}/items',
+            uriVariables: [
+                'id' => new Link(fromClass: Inventory::class, toProperty: 'inventory')
+            ],
+        )
+    ],
+    paginationItemsPerPage: 2,
+    paginationMaximumItemsPerPage: 10,
+    paginationClientItemsPerPage: true,
+    parameters: [
+        'name' => new QueryParameter(
+            filter: PartialSearchFilter::class,
+            description: 'Search by name'
+        ),
+        'description' => new QueryParameter(
+            filter: PartialSearchFilter::class,
+            description: 'Search by description'
+        )
+    ]
 )]
 class Item extends Model
 {
