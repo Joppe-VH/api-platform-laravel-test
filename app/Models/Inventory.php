@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\ApiResource;
     paginationMaximumItemsPerPage: 30,
     paginationClientItemsPerPage: true
 )]
+#[ApiProperty(property: 'name', example: 'Inventory 1')]
 class Inventory extends Model
 {
     /** @use HasFactory<\Database\Factories\InventoryFactory> */
@@ -22,7 +23,14 @@ class Inventory extends Model
         'name',
     ];
 
-    #[ApiProperty(writable: false)]
+    #[ApiProperty(writable: false, openapiContext: [
+        'type' => 'array',
+        'items' => [
+            'type' => 'string',
+            'format' => 'iri-reference',
+            'example' => 'api/items/1'
+        ]
+    ])]
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);
