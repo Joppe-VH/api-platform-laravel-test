@@ -14,6 +14,7 @@ use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\RequestBody;
 use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
 use ApiPlatform\Metadata\QueryParameter;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[ApiResource(
     paginationItemsPerPage: 2,
@@ -58,4 +59,9 @@ class Item extends Model
         'name',
         'description'
     ];
+
+    public function inventory(): BelongsTo
+    {
+        return $this->belongsTo(Inventory::class);
+    }
 }

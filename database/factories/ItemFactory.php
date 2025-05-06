@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Inventory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,7 @@ class ItemFactory extends Factory
             //  
             'name' => $this->faker->word,
             'description' => $this->faker->text,
+            'inventory_id' => $this->faker->randomElement(Inventory::pluck('id')),
         ];
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Inventory;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,10 +12,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->timestamps();
+        Schema::table('items', function (Blueprint $table) {
+            $table->foreignIdFor(Inventory::class)->constrained()->cascadeOnUpdate();
         });
     }
 
@@ -23,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventories');
+        Schema::table('items', function (Blueprint $table) {
+            $table->dropConstrainedForeignIdFor(Inventory::class);
+        });
     }
 };
